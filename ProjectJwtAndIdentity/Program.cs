@@ -1,6 +1,11 @@
+using ProjectJwtAndIdentity.Context;
+using ProjectJwtAndIdentity.Entities;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<MovieContext>();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<MovieContext>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
