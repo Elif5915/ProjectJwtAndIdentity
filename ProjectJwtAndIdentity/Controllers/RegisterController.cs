@@ -19,7 +19,7 @@ public class RegisterController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Index(RegisterViewModel model)
+    public async Task<IActionResult> Index(RegisterViewModel model) //buradaki register create işlemi aspnetusers tablosuna kayıt atıyor.
     {
         AppUser appUser = new AppUser()
         {
@@ -27,8 +27,8 @@ public class RegisterController : Controller
             Surname = model.SurName,
             UserName = model.UserName,
             Email = model.Email
-        };
-        await _userManager.CreateAsync(appUser, model.Password);
+        }; //CreateAsync pssword db kayıt ederken hash liyor. o yüzden üstteki appuser model de atama yapmadık diğerleri gibi.
+        await _userManager.CreateAsync(appUser, model.Password); 
         return RedirectToAction("RoleList", "Role");
     }
 }
