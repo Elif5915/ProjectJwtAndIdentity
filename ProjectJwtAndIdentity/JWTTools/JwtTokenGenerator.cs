@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using ProjectJwtAndIdentity.Models;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -26,7 +27,18 @@ public class JwtTokenGenerator
         //token oluşturma kodları
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));
         var signinCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        return null;
+        var expireDate = DateTime.Now.AddMinutes(JwtTokenDefaults.Expire);
+        JwtSecurityToken token = new JwtSecurityToken(
+            issuer:JwtTokenDefaults.ValidIssuer,
+            audience: JwtTokenDefaults.ValidAudience,
+            claims: claims,
+            notBefore: DateTime.Now,
+            expires: expireDate,
+            signingCredentials: signinCredentials);  //notBefore ile ne zamandan önce çalışmasın belirtiyoruz, şuandan önce çalışmasın dedik
+
+        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler(); //sistemin kendisinden geliyor,handler işle demek gibi yani tokenı işle gibibir şey demiş oluyoruz.
+        return new TokenResponseModel(tokenHandler.WriteToken(token), expireDate);
 
     }
+    // metod ne türünde  ise geriye onu döner. buradaki metod TokenResponseModel model tipinde o zaman model döner,int olsaydı integer string olsaydı string türünde değer dönerdi.
 }
